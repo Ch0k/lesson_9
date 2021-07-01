@@ -38,18 +38,17 @@ module Validation
     @fff = self.class.var_array
     @fff.each do |var|
       if var[:type_name] == :presence
-        self.presence(var[:var_name])
+        self.send(var[:type_name],(var[:var_name]))
       elsif var[:type_name] == :format
-        self.format(var[:var_name], var[:params])
+        self.send(var[:type_name],(var[:var_name]),var[:params])
       else var[:type_name] == :type
-        self.type(var[:var_name], var[:params])
+        self.send(var[:type_name],(var[:var_name]),var[:params])
       end
     end
   end
 
   def presence(name)
-    puts "#{name}"
-    #raise 'Number should be at least 6 symbols' if name.nil?
+    raise 'Number should be at least 6 symbols' if name.nil?
   end
 
   def type(name, params)
@@ -68,10 +67,10 @@ end
 
 class Test
   include Validation
-  validate :name, :presence
+  #validate :name, :presence
   #validate :namesss, :format, /[a-z]{6,}/
  # validate :number, :format, /^[\d\w]{3}-?[\d\w]{2}$/
-  #validate :name, :type, Symbol
+  validate :name, :type, Symbol
   #validate :format, :number, /^[\d\w]{3}-?[\d\w]{2}$/
 
   def initialize(name)
